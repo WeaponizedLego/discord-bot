@@ -1,0 +1,22 @@
+{
+  "name": "discord-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:watch": "nodemon --watch 'src/**/*' --exec 'npm run build && node ./dist/index.js'",
+    "build": "tsc",
+    "deploy:commands": "node deploy-commands.js"
+  },
+  "author": "Glen",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.21",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "discord.js": "^14.8.0",
+    "openai": "^3.2.1"
+  }
+}
