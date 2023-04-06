@@ -3,5 +3,6 @@
   "clientId": "",
   "guildId": [],
   "openapi_token": "",
-  "voice_profile": ""
+  "voice_profile": "",
+  "mongoUrl": ""
 }
