@@ -1,12 +1,20 @@
 import { Client, Collection, GatewayIntentBits } from 'discord.js'
-import { token } from './config.json'
+import { token, mongoUrl } from './config.json'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
+import { Player } from 'discord-player'
+import { MongoClient } from 'mongodb'
 
-// console.log(GatewayIntentBits)
+export const mongoClient = () => {
+  return new MongoClient(mongoUrl).connect()
+}
+
+export interface CustomClient extends Client {
+  player?: Player
+}
 
 // add intents so that it can join a voice channel
-const client = new Client({
+const client: CustomClient = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildVoiceStates,
@@ -16,6 +24,20 @@ const client = new Client({
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildPresences
   ]
+})
+
+// add new property to client called player
+export const player = new Player(client, {
+  ytdlOptions: {
+    quality: 'highestaudio',
+    highWaterMark: 1 << 25
+  }
+})
+
+// this event is emitted whenever discord-player starts to play a track
+player.events.on('playerStart', (queue: any, track) => {
+  // we will later define queue.metadata object while creating the queue
+  queue.metadata.channel.send(`Started playing **${track.title}**!`)
 })
 
 // @ts-ignore
@@ -55,6 +77,8 @@ for (const file of eventFiles) {
     client.on(event.name, (...args: any) => event.execute(...args))
   }
 }
+
+export const clientExport = client
 
 client.login(token)
 

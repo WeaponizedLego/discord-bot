@@ -55,7 +55,6 @@ module.exports = {
     user: { username: any }
   }) {
     // console.log('interaction', interaction)
-    console.time('Ask finished with')
     await interaction.deferReply()
 
     const question = interaction.options.getString('question')
@@ -99,7 +98,7 @@ module.exports = {
     })
 
     // await interaction.editReply('Yes please')
-    console.time('OpenAI API call')
+    // console.time('OpenAI API call')
 
     const prompt = personaPrompt + question
     console.log('prompt', prompt)
@@ -144,7 +143,7 @@ module.exports = {
     Your Question: ${question}${completion.choices[0].text}${signOffPrompt}
     `)
 
-    console.timeLog('Ask finished with', { question })
+    // console.timeLog('Ask finished with', { question })
     console.log(
       '_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ '
     )

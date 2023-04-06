@@ -1,6 +1,6 @@
 const { exec } = require('child_process')
 const { REST, Routes } = require('discord.js')
-const { clientId, guildId, token } = require('./dist/config.json')
+const { clientId, guildIds, token } = require('./dist/config.json')
 const fs = require('node:fs')
 const path = require('node:path')
 
@@ -36,14 +36,36 @@ const rest = new REST({ version: '10' }).setToken(token)
         )
 
         // The put method is used to fully refresh all commands in the guild with the current set
-        const data = await rest.put(
-          Routes.applicationGuildCommands(clientId, guildId),
-          { body: commands }
-        )
 
-        console.log(
-          `Successfully reloaded ${data.length} application (/) commands.`
-        )
+        const promises = []
+        for (const guild of guildIds) {
+          promises.push(
+            rest.put(Routes.applicationGuildCommands(clientId, guild), {
+              body: commands
+            })
+          )
+        }
+
+        // const data = await rest.put(
+        //   Routes.applicationGuildCommands(clientId, guildId),
+        //   { body: commands }
+        // )
+
+        // console.log(
+        //   `Successfully reloaded ${data.length} application (/) commands.`
+        // )
+
+        const joinedGuilds = await Promise.allSettled(promises)
+
+        for (const promiseResult of joinedGuilds) {
+          if (promiseResult.status === 'fulfilled') {
+            console.log(
+              `Successfully reloaded ${promiseResult.value.length} application (/) commands.`
+            )
+          } else {
+            console.error(promiseResult.reason)
+          }
+        }
       })()
     })
   } catch (error) {
