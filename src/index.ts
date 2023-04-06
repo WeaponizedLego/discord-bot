@@ -1,9 +1,24 @@
-const { Client, GatewayIntentBits, Collection } = require('discord.js')
-const { token } = require('./config.json')
-const fs = require('node:fs')
-const path = require('node:path')
-const client = new Client({ intents: 8 })
+import { Client, Collection, GatewayIntentBits } from 'discord.js'
+import { token } from './config.json'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 
+// console.log(GatewayIntentBits)
+
+// add intents so that it can join a voice channel
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildMessageTyping,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildPresences
+  ]
+})
+
+// @ts-ignore
 client.commands = new Collection()
 
 const commandsPath = path.join(__dirname, 'commands')
@@ -17,6 +32,7 @@ for (const file of commandFiles) {
   const command = require(filePath)
   // Set a new item in the Collection with the key as the command name and the value as the exported module
   if ('data' in command && 'execute' in command) {
+    // @ts-ignore
     client.commands.set(command.data.name, command)
   } else {
     console.log(

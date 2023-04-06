@@ -65,7 +65,7 @@ module.exports = {
       persona = interaction.options.getString('persona')
     }
 
-    let creatThread: boolean
+    let creatThread: boolean = false
     if (interaction.options.getBoolean('thread')) {
       creatThread = true
     }
